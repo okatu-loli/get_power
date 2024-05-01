@@ -8,4 +8,4 @@ def get_qrcode():
     return send_from_directory('qrcode', 'qrcode.png', mimetype='image/jpeg')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run("0.0.0.0",debug=True)
