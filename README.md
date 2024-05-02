@@ -15,6 +15,11 @@
 ### 1. 配置环境
 
 首先，确保你的系统中已安装了Python和所需的依赖。
+```
+pip install -r requirements.txt
+# python -m playwright install
+playwright install
+```
 
 ### 2. 下载项目
 
