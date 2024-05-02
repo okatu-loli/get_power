@@ -16,16 +16,13 @@
 
 首先，确保你的系统中已安装了Python和所需的依赖。
 ```
+git clone https://github.com/okatu-loli/get_power
 pip install -r requirements.txt
 # python -m playwright install
 playwright install
 ```
 
-### 2. 下载项目
-
-从GitHub下载项目代码到本地。
-
-### 3. 配置文件
+### 2. 配置文件
 
 复制 `config.ini.example` 文件并重命名为 `config.ini`，根据需要填写以下配置信息：
 
@@ -65,7 +62,7 @@ to =
 isRoom =
 ```
 
-### 4. 启动程序
+### 3. 启动程序
 
 启动程序后，访问 `http://你的IP:5000/qrcode`，扫描二维码进行登录。
 
