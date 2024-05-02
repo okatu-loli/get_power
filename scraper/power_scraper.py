@@ -48,7 +48,7 @@ def monitor_qrcode_for_expiry(page):
                 break  # 登录成功，跳出循环
             else:
                 print("登录未成功，继续监测...")
-            time.sleep(1)
+            time.sleep(5)
 
 
 def fetch_and_save_qrcode(page):
