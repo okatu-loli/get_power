@@ -3,10 +3,11 @@ import os
 import time
 from datetime import datetime, timedelta
 
+import playwright
 from playwright.sync_api import expect
 
 QR_CODE_PATH = "qrcode/qrcode.png"
-WAIT_TIMEOUT = 1000000
+WAIT_TIMEOUT = 5000
 
 
 def ensure_directory_exists(file_path):
@@ -19,6 +20,35 @@ def save_qrcode_as_image(base64_data, path):
     image_data = base64.b64decode(base64_data)
     with open(path, 'wb') as file:
         file.write(image_data)
+
+
+def monitor_qrcode_for_expiry(page):
+    """持续监控二维码是否失效"""
+    while True:
+        # 定位二维码提示元素
+        failure_prompt_locator = page.locator("#login_box > div.ewm-login > div > div.sweepCodePic > div > p")
+
+        # 获取当前的提示文本内容
+        failure_texts = failure_prompt_locator.all_inner_texts()
+
+        # 检查是否有二维码失效的提示
+        if any("二维码失效，点击图片重新获取" in text for text in failure_texts):
+            print("检测到二维码已失效.")
+
+            page.get_by_text("二维码失效，点击图片重新获取").click()
+
+            # 重新调用获取并保存二维码的函数
+            fetch_and_save_qrcode(page)
+
+            # 可能需要在此处添加适当的逻辑来中断循环或重置状态，取决于您的具体需求
+        else:
+            print("正在检查登录状态...")
+            if check_login_success(page):
+                print("登录成功，停止监测二维码。")
+                break  # 登录成功，跳出循环
+            else:
+                print("登录未成功，继续监测...")
+            time.sleep(1)
 
 
 def fetch_and_save_qrcode(page):
@@ -36,13 +66,22 @@ def fetch_and_save_qrcode(page):
         print(f'二维码保存到 {QR_CODE_PATH}')
     else:
         raise LoginFailedException("无法获取有效的二维码图像")
+    monitor_qrcode_for_expiry(page)
 
 
 def check_login_success(page):
-    """检查登录是否成功"""
+    """检查登录是否成功，并使用try-except处理潜在异常"""
     login_indicator = "#member_info > div > div > div > div > div.outerLayer > ul > li.content-name"
-    page.wait_for_selector(login_indicator, timeout=WAIT_TIMEOUT)
-    return page.is_visible(login_indicator)
+    try:
+        page.wait_for_selector(login_indicator, timeout=WAIT_TIMEOUT)
+        is_visible = page.is_visible(login_indicator)
+        return is_visible
+    except playwright.sync_api.TimeoutError:
+        print("等待登录指示器超时，可能是登录未完成或页面结构有变。")
+        return False
+    except Exception as e:
+        print(f"检查登录状态时发生未知错误: {e}")
+        return False
 
 
 def get_and_print_electricity_bill(page):
@@ -73,7 +112,6 @@ def should_refresh_at_specific_time(hours, mins):
 
 def monitor_electricity_bill(page, hours, mins, notify_callback=None):
     """监控电费信息并在指定时间刷新页面"""
-    last_check_time = None  # 初始化上次检查时间
     while True:
         now = datetime.now()
 
