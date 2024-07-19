@@ -4,11 +4,11 @@
 
 ## 简介
 
-**GetPower** 是一个实用的小工具，旨在帮助用户实时监控和通知电费情况。该工具支持通过二维码登录，并能将电费信息推送至多个平台，包括飞书、MQTT、ServerChan、微信机器人Webhook、Webhook以及Bark。
+**GetPower** 是一个实用的小工具，旨在帮助用户实时监控和通知电费情况。该工具支持通过二维码登录，并能将电费信息推送至多个平台，包括飞书、MQTT、[ServerChan](https://sct.ftqq.com/r/9205)、微信机器人Webhook、Webhook以及Bark。
 
 ## 特性
 
-- **支持多种通知平台**：飞书、MQTT、ServerChan、wechatbot-Webhook、Webhook和Bark。
+- **支持多种通知平台**：飞书、MQTT、[ServerChan](https://sct.ftqq.com/r/9205)、wechatbot-Webhook、Webhook和Bark。
 - **二维码登录**：简便快捷的二维码登录方式。
 - **定时推送**：可配置的推送时间，按时提醒电费信息。
 
